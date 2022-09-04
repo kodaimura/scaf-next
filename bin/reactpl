@@ -1,0 +1,34 @@
+#!/bin/bash
+
+APP_NAME=${1:-frontend}
+
+#シェルの実行ディレクトリの絶対パス
+CURRENT_DIR=$(pwd)
+#このスクリプトの絶対パス
+SELF_DIR=$(cd $(dirname $0); pwd)
+#reactplコピー元プログラムの絶対パス
+REACTPL_DIR=$(cd $SELF_DIR; cd ../reactpl; pwd)
+
+cd $CURRENT_DIR
+npx create-react-app $APP_NAME --template typescript
+
+cd $APP_NAME
+
+yes | rm -r public
+yes | rm -r src
+rm README.md
+
+cp -r $REACTPL_DIR/public .
+cp -r $REACTPL_DIR/src .
+cp -r $REACTPL_DIR/.env .
+
+touch README.md
+
+npm i react-router-dom
+npm i --save-dev @types/react-router-dom
+
+echo ''
+echo 'proxy setting [package.json] add one line'
+echo '"proxy": "http://localhost:3000"'
+
+open $CURRENT_DIR/$APP_NAME
