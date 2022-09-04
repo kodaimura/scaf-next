@@ -51,7 +51,7 @@ export const login =　(
 		if (!response.ok) {
 			if (setErrorMsg) {
 				setErrorMsg((response.status === 401)? 
-					"Uknown name or bad password." 
+					"Unknown name or bad password." 
 					: "Login failed.");
 			}
 			throw new Error(response.statusText);
