@@ -14,6 +14,13 @@ export const signup = (
 		return
 	}
 
+	if (password === "") {
+		if (setErrorMsg) {
+			setErrorMsg("Password is Required field.");
+		}
+		return
+	}
+
 	if (password !== passwordConfirm && setErrorMsg) {
 		setErrorMsg("Confirmation passwords do not match.");
 	} else {
