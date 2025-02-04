@@ -15,43 +15,33 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <>
-      <header className={styles.header}>
-        <h1>Nextpl</h1>
-        <Link href="/signup" className={styles.signUpButton}>
-          サインアップ
-        </Link>
-      </header>
-      <main className={styles.main}>
-        <div className={styles.container}>
-          <form className={styles.form} onSubmit={handleLogin}>
-            <div className={styles.inputGroup}>
-              <label htmlFor="username" className={styles.label}>ユーザー名</label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className={styles.input}
-                required
-              />
-            </div>
-            <div className={styles.inputGroup}>
-              <label htmlFor="password" className={styles.label}>パスワード</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={styles.input}
-                required
-              />
-            </div>
-            <button type="submit" className={styles.submitButton}>ログイン</button>
-          </form>
+    <div className={styles.container}>
+      <form className={styles.form} onSubmit={handleLogin}>
+        <div className={styles.inputGroup}>
+          <label htmlFor="username" className={styles.label}>ユーザー名</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className={styles.input}
+            required
+          />
         </div>
-      </main>
-    </>
+        <div className={styles.inputGroup}>
+          <label htmlFor="password" className={styles.label}>パスワード</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={styles.input}
+            required
+          />
+        </div>
+        <button type="submit" className={styles.submitButton}>ログイン</button>
+      </form>
+    </div>
   );
 };
 

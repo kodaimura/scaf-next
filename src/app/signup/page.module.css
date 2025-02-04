@@ -1,43 +1,25 @@
-.header {
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: white;
-}
-
-.signInButton {
-  padding: 8px 15px;
-  background: transparent;
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  border: 2px solid white;
-  border-radius: 5px;
-  transition: 0.3s;
-}
-
-.signInButton:hover {
-  background: white;
-  color: #2575fc;
-}
-
-.main {
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.container {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
+  height: 80vh;
 }
 
 .form {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  width: 100%;
+  max-width: 350px;
+  gap: 10px;
+}
+
+.inputGroup {
+  text-align: left;
 }
 
 .label {
