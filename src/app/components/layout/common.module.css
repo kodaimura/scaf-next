@@ -25,14 +25,13 @@
 }
 
 .signInButton {
-  padding: 8px 15px;
+  padding: 5px 10px;
   background: transparent;
   color: white;
   text-decoration: none;
   font-weight: bold;
   border: 2px solid white;
   border-radius: 5px;
-  transition: 0.3s;
 }
 
 .signInButton:hover {
@@ -41,14 +40,13 @@
 }
 
 .signUpButton {
-  padding: 8px 15px;
+  padding: 5px 10px;
   background: white;
   color: #2575fc;
   text-decoration: none;
   font-weight: bold;
   border: 2px solid white;
   border-radius: 5px;
-  transition: 0.3s;
 }
 
 .signUpButton:hover {
