@@ -16,16 +16,6 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <>
-      <header className={styles.header}>
-        <h1>Nextpl</h1>
-        <div className={styles.authButtons}>
-          <Link href="/login" className={styles.signInButton}>
-            サインイン
-          </Link>
-        </div>
-      </header>
-      <main className={styles.main}>
         <div className={styles.container}>
           <form className={styles.form} onSubmit={handleSignup}>
             <div className={styles.inputGroup}>
@@ -72,8 +62,6 @@ const SignupPage: React.FC = () => {
             </button>
           </form>
         </div>
-      </main>
-    </>
   );
 };
 

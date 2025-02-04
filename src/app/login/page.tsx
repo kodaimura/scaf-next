@@ -15,14 +15,6 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <>
-      <header className={styles.header}>
-        <h1>Nextpl</h1>
-        <Link href="/signup" className={styles.signUpButton}>
-          サインアップ
-        </Link>
-      </header>
-      <main className={styles.main}>
         <div className={styles.container}>
           <form className={styles.form} onSubmit={handleLogin}>
             <div className={styles.inputGroup}>
@@ -50,8 +42,6 @@ const LoginPage: React.FC = () => {
             <button type="submit" className={styles.submitButton}>ログイン</button>
           </form>
         </div>
-      </main>
-    </>
   );
 };
 
