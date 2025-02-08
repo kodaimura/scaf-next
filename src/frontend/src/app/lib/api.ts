@@ -1,5 +1,3 @@
-const BASE_URL = `${process.env.NEXT_PUBLIC_API_HOST}/api`;
-
 class HttpError extends Error {
   status: number;
 
@@ -11,23 +9,43 @@ class HttpError extends Error {
 
 class Api {
   private url: string;
+  private headers: HeadersInit = {};
 
-  constructor(url: string) {
-    this.url = url;
+  constructor() {
+    if (typeof window !== 'undefined') {
+      // クライアントサイド（CSR）
+      this.url = `${process.env.NEXT_PUBLIC_API_HOST}/api`;
+    } else {
+      // サーバーサイド（SSR）
+      this.url = 'http://backend:3001/api';
+    }
   }
 
-  private async apiFetch<T>(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: unknown): Promise<T> {
+  setSSRContext(context?: { req?: { headers?: { cookie?: string } } }) {
+    if (typeof window === 'undefined' && context?.req?.headers?.cookie) {
+      this.headers['Cookie'] = context.req.headers.cookie;
+    }
+  }
+
+  private async apiFetch<T>(
+    endpoint: string,
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    body?: unknown
+  ): Promise<T> {
     if (endpoint.startsWith('/')) {
       endpoint = endpoint.slice(1);
     }
+
     try {
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
+        ...this.headers, // SSR の場合に Cookie を含める
       };
 
       const options: RequestInit = {
         method,
         headers,
+        credentials: 'include',
       };
 
       if (body) {
@@ -42,7 +60,7 @@ class Api {
       }
 
       if (response.status === 204) {
-        return {} as T; // 空のレスポンス用の型キャスト
+        return {} as T;
       }
 
       return await response.json() as T;
@@ -54,7 +72,6 @@ class Api {
         throw error;
       }
     }
-    throw new Error('Unexpected error in apiFetch');
   }
 
   async get<T>(endpoint: string): Promise<T> {
@@ -73,29 +90,26 @@ class Api {
     return this.apiFetch<T>(endpoint, 'DELETE', body);
   }
 
-  public handleHttpError(error: HttpError): never {
-    console.error(error);
+  private handleHttpError(error: HttpError): never {
+    if (typeof window !== 'undefined') {
+      // クライアントサイド（CSR）
+      if (error.status === 401) {
+        if (window.location.pathname !== '/login') {
+          window.location.replace('/login');
+        }
+      } else if (error.status === 403) {
+        alert('権限がありません。');
+      } else if (error.status === 500) {
+        alert('予期せぬエラーが発生しました。');
+      }
+    } else {
+      // サーバーサイド（SSR）
+      console.error(error);
+    }
     throw error;
   }
 }
 
-const api = new Api(BASE_URL);
+const api = new Api();
 
-// クライアントサイドでのみカスタムエラーハンドリングを適用
-if (typeof window !== 'undefined') {
-  api.handleHttpError = (error: HttpError) => {
-    const status = error.status;
-    if (status === 401) {
-      if (window.location.pathname !== '/login') {
-        window.location.replace('/login');
-      }
-    } else if (status === 403) {
-      alert('権限がありません。');
-    } else if (status === 500) {
-      alert('予期せぬエラーが発生しました。');
-    }
-    throw error;
-  };
-}
-
-export { HttpError, Api, BASE_URL, api };
+export { HttpError, Api, api };
