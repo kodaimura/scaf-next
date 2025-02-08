@@ -18,6 +18,11 @@
   gap: 10px;
 }
 
+.error {
+  color: #dd0000;
+  white-space: pre-line;
+}
+
 .inputGroup {
   text-align: left;
 }

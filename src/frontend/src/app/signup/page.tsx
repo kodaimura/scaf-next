@@ -1,58 +1,77 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { api } from "@/app/lib/api";
 import styles from "./page.module.css";
 
 const SignupPage: React.FC = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [account_name, setAccountName] = useState("");
+  const [account_password, setAccountPassword] = useState("");
+  const [confirm_password, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("サインアップ中...", { username, email, password });
-    // サインアップ処理
+    setError("");
+    
+    if (account_password !== confirm_password) {
+      setError("パスワードが一致しません。");
+      return;
+    }
+
+    try {
+      const response = await api.post("signup", {
+        account_name,
+        account_password,
+      });
+      router.push("/login");
+    } catch (error) {
+      console.error("サインアップ失敗", error);
+      setError("サインアップに失敗しました。\nもう一度お試しください。");
+    }
   };
 
   return (
     <div className={styles.container}>
       <form className={styles.form} onSubmit={handleSignup}>
+        {error && <p className={styles.error}>{error}</p>}
         <div className={styles.inputGroup}>
-          <label htmlFor="username" className={styles.label}>
-            ユーザー名
+          <label htmlFor="account_name" className={styles.label}>
+            アカウント名
           </label>
           <input
             type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            id="account_name"
+            value={account_name}
+            onChange={(e) => setAccountName(e.target.value)}
             className={styles.input}
             required
           />
         </div>
         <div className={styles.inputGroup}>
-          <label htmlFor="email" className={styles.label}>
-            メールアドレス
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={styles.input}
-            required
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <label htmlFor="password" className={styles.label}>
+          <label htmlFor="account_password" className={styles.label}>
             パスワード
           </label>
           <input
             type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            id="account_password"
+            value={account_password}
+            onChange={(e) => setAccountPassword(e.target.value)}
+            className={styles.input}
+            required
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <label htmlFor="confirm_password" className={styles.label}>
+            パスワード（確認）
+          </label>
+          <input
+            type="password"
+            id="confirm_password"
+            value={confirm_password}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className={styles.input}
             required
           />
