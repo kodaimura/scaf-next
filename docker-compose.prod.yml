@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/prod/Dockerfile.backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+    working_dir: /app
+    command: sh -c "npm run start"
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/prod/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    working_dir: /app
+    command: sh -c "npm run build && npm run start"
+    restart: always
+
+#  db:
+#    image: postgres:16.1
+#    environment:
+#      POSTGRES_DB: nextpl
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
+#    volumes:
+#      - ./data:/var/lib/postgresql/data 
