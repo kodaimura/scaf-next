@@ -1,13 +1,42 @@
 services:
-  next:
-    build: .
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile.backend
+    volumes:
+      - ./src/backend:/app
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=nextpl
+    working_dir: /app
+    tty: true
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile.frontend
+    volumes:
+      - ./src/frontend:/app
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
     environment:
+      - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-    stdin_open: true
-    tty: true
     working_dir: /app
-    command: ["npm", "run", "dev"]
+    tty: true
+
+  db:
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: nextpl
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data 
