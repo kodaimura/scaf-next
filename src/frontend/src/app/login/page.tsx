@@ -16,9 +16,7 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await api.post<{ token: string }>('accounts/login', { account_name, account_password });
-      localStorage.setItem('token', response.token);
-
+      await api.post('accounts/login', { account_name, account_password });
       router.push('/dashboard');
     } catch (err) {
       if (err instanceof Error) {
