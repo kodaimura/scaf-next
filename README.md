@@ -1,2 +1,2 @@
 # Nextpl
-next template
+## Next Template
