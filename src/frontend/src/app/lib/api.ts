@@ -8,41 +8,28 @@ class HttpError extends Error {
 }
 
 class Api {
-  private url: string;
-  private headers: HeadersInit = {};
-
-  constructor() {
-    if (typeof window !== 'undefined') {
-      // クライアントサイド（CSR）
-      this.url = `${process.env.NEXT_PUBLIC_API_HOST}/api`;
-    } else {
-      // サーバーサイド（SSR）
-      this.url = 'http://backend:3001/api';
-    }
+  private getBaseUrl(): string {
+    const isServer = typeof window === 'undefined';
+    return isServer ? 'http://backend:3001/api' : `${process.env.NEXT_PUBLIC_API_HOST}/api`;
   }
 
-  setSSRContext(context?: { req?: { headers?: { cookie?: string } } }) {
-    if (typeof window === 'undefined' && context?.req?.headers?.cookie) {
-      this.headers['Cookie'] = context.req.headers.cookie;
-    }
-  }
-
-  private async apiFetch<T>(
-    endpoint: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-    body?: unknown
-  ): Promise<T> {
+  private async apiFetch<T>(endpoint: string, method: string, body?: unknown): Promise<T> {
     if (endpoint.startsWith('/')) {
       endpoint = endpoint.slice(1);
     }
-
+    
     try {
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
-        ...this.headers, // SSR の場合に Cookie を含める
       };
 
-      const options: RequestInit = {
+      if (typeof window === 'undefined') {
+        const { cookies } = await import('next/headers');
+        const cookieStore = await cookies();
+        headers.Cookie = `access_token=${cookieStore.get('access_token')?.value}`
+      }
+      
+      const options: any = {
         method,
         headers,
         credentials: 'include',
@@ -51,22 +38,28 @@ class Api {
       if (body) {
         options.body = JSON.stringify(body);
       }
-
-      const response = await fetch(`${this.url}/${endpoint}`, options);
+      
+      const response = await fetch(`${this.getBaseUrl()}/${endpoint}`, options);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        const errorData = await response.json();
         throw new HttpError(response.status, errorData.error);
       }
 
-      if (response.status === 204) {
+      try {
+        return (await response.json()) as T;
+      } catch {
+        if (response.status !== 204 && response.status !== 200) {
+          throw new HttpError(response.status, 'Error parsing JSON');
+        }
         return {} as T;
       }
-
-      return await response.json() as T;
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof HttpError) {
-        this.handleHttpError(error);
+        if (typeof window !== 'undefined') {
+          this.handleClientSideError(error);
+        }
+        throw error;
       } else {
         console.error(error);
         throw error;
@@ -90,26 +83,25 @@ class Api {
     return this.apiFetch<T>(endpoint, 'DELETE', body);
   }
 
-  private handleHttpError(error: HttpError): never {
-    if (typeof window !== 'undefined') {
-      // クライアントサイド（CSR）
-      if (error.status === 401) {
-        if (window.location.pathname !== '/login') {
-          window.location.replace('/login');
-        }
-      } else if (error.status === 403) {
-        alert('権限がありません。');
-      } else if (error.status === 500) {
-        alert('予期せぬエラーが発生しました。');
-      }
-    } else {
-      // サーバーサイド（SSR）
-      console.error(error);
-    }
+  public handleClientSideError(error: HttpError): never {
+    console.error(error);
     throw error;
   }
 }
 
 const api = new Api();
+api.handleClientSideError = (error: HttpError): never => {
+  const status = error.status;
+  if (status === 401) {
+    if (window.location.pathname !== '/login') {
+      window.location.replace('/login');
+    }
+  } else if (status === 403) {
+    alert("権限がありません。");
+  } else if (status === 500) {
+    alert("予期せぬエラーが発生しました。");
+  }
+  throw error;
+};
 
 export { HttpError, Api, api };
