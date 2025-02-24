@@ -8,9 +8,25 @@ class HttpError extends Error {
 }
 
 class Api {
-  private getBaseUrl(): string {
-    const isServer = typeof window === 'undefined';
-    return isServer ? 'http://backend:3001/api' : `${process.env.NEXT_PUBLIC_API_HOST}/api`;
+  url: string;
+
+  constructor(url: string) {
+    this.url = url;
+  }
+
+  public async createFetchOptions(method: string, body?: unknown): Promise<any> {
+    const options: any = {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    };
+
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
+    return options;
   }
 
   private async apiFetch<T>(endpoint: string, method: string, body?: unknown): Promise<T> {
@@ -19,27 +35,8 @@ class Api {
     }
     
     try {
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-      };
-
-      if (typeof window === 'undefined') {
-        const { cookies } = await import('next/headers');
-        const cookieStore = await cookies();
-        headers.Cookie = `access_token=${cookieStore.get('access_token')?.value}`
-      }
-      
-      const options: any = {
-        method,
-        headers,
-        credentials: 'include',
-      };
-
-      if (body) {
-        options.body = JSON.stringify(body);
-      }
-      
-      const response = await fetch(`${this.getBaseUrl()}/${endpoint}`, options);
+      const options: any = await this.createFetchOptions(method, body);
+      const response = await fetch(`${this.url}/${endpoint}`, options);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -56,10 +53,7 @@ class Api {
       }
     } catch (error: unknown) {
       if (error instanceof HttpError) {
-        if (typeof window !== 'undefined') {
-          this.handleClientSideError(error);
-        }
-        throw error;
+        this.handleHttpError(error);
       } else {
         console.error(error);
         throw error;
@@ -83,25 +77,10 @@ class Api {
     return this.apiFetch<T>(endpoint, 'DELETE', body);
   }
 
-  public handleClientSideError(error: HttpError): never {
+  public handleHttpError(error: HttpError): never {
     console.error(error);
     throw error;
   }
 }
 
-const api = new Api();
-api.handleClientSideError = (error: HttpError): never => {
-  const status = error.status;
-  if (status === 401) {
-    if (window.location.pathname !== '/login') {
-      window.location.replace('/login');
-    }
-  } else if (status === 403) {
-    alert("権限がありません。");
-  } else if (status === 500) {
-    alert("予期せぬエラーが発生しました。");
-  }
-  throw error;
-};
-
-export { HttpError, Api, api };
+export { HttpError, Api };

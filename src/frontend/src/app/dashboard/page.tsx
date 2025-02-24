@@ -1,5 +1,5 @@
 import React from 'react';
-import { api } from '@/app/lib/api';
+import { api } from '@/app/lib/api.server';
 
 const DashboardPage: React.FC = async () => {
   const data: any = await api.get('accounts/me');

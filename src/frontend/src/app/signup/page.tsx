@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '@/app/lib/api';
+import { api } from '@/app/lib/api.client';
 import styles from './page.module.css';
 
 const SignupPage: React.FC = () => {
