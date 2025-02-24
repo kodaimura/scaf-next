@@ -14,7 +14,7 @@ services:
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASS=postgres
-      - DB_NAME=nextpl
+      - DB_NAME=sample
       - JWT_EXPIRATION=2592000
       - JWT_SECRET=secret
     working_dir: /app
@@ -39,7 +39,7 @@ services:
   db:
     image: postgres:16.1
     environment:
-      POSTGRES_DB: nextpl
+      POSTGRES_DB: sample
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
