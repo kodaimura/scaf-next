@@ -3,9 +3,15 @@
 import { usePathname } from 'next/navigation';
 import Link from "next/link";
 import styles from './common.module.css';
+import { api } from '@/app/lib/api.client';
 
 const Header = () => {
   const pathname = usePathname();
+
+  const logout = () => {
+    api.post('/accounts/logout', {});
+    window.location.replace('/login');
+  }
 
   let buttons;
   if (pathname === "/login") {
@@ -15,8 +21,9 @@ const Header = () => {
   } else if (pathname === "/") {
     buttons = <><Link href="/login" className={styles.signInButton}>サインイン</Link><Link href="/signup" className={styles.signUpButton}>サインアップ</Link></>;
   } else {
-    buttons = <button className={styles.signInButton}>ログアウト</button>;
+    buttons = <button className={styles.signInButton} onClick={logout}>ログアウト</button>;
   }
+
   return (
     <header className={styles.header}>
       <h1>Nextpl</h1>
