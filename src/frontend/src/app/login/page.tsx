@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { HttpError } from '@/app/lib/api';
 import { api } from '@/app/lib/api.client';
 import styles from './page.module.css';
 
@@ -19,8 +20,12 @@ const LoginPage: React.FC = () => {
       await api.post('accounts/login', { account_name, account_password });
       router.push('/dashboard');
     } catch (err) {
-      if (err instanceof Error) {
-        console.error('ログインエラー:', err.message);
+      if (err instanceof HttpError && err.status === 401) {
+        setError('ユーザ名又はパスワードが異なります。');
+      } else {
+        if (err instanceof Error) {
+          console.error('ログインエラー:', err.message);
+        }
         setError('ログインに失敗しました。');
       }
     }

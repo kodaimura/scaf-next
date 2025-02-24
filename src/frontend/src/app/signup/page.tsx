@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { HttpError } from '@/app/lib/api';
 import { api } from '@/app/lib/api.client';
 import styles from './page.module.css';
 
@@ -27,9 +28,15 @@ const SignupPage: React.FC = () => {
         account_password,
       });
       router.push('/login');
-    } catch (error) {
-      console.error('サインアップ失敗', error);
-      setError('サインアップに失敗しました。\nもう一度お試しください。');
+    } catch (err) {
+      if (err instanceof HttpError && err.status === 409) {
+        setError('ユーザ名が既に使われています。');
+      } else {
+        if (err instanceof Error) {
+          console.error('サインアップ失敗', err);
+        }
+        setError('サインアップに失敗しました。\nもう一度お試しください。');
+      }
     }
   };
 
