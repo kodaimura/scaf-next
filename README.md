@@ -1,2 +1,2 @@
 # Nextpl
-## Next Template
+## Next Sample
