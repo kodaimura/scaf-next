@@ -1,9 +1,0 @@
-FROM node:23.6.1
-
-# WORKDIR /app
-
-# COPY src/backend/package*.json .
-
-# RUN npm install
-
-# COPY src/backend .

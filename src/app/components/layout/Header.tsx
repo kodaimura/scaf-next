@@ -26,7 +26,7 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      <h1>Nextpl</h1>
+      <h1>scaf-next</h1>
       <div className={styles.headerButtons}>
         {buttons}
       </div>
