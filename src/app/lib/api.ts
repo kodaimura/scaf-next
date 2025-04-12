@@ -15,7 +15,7 @@ class Api {
   }
 
   public async createFetchOptions(method: string, body?: unknown): Promise<any> {
-    const options: any = {
+    const options: RequestInit = {
       method: method,
       headers: {
         'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ class Api {
     }
     
     try {
-      const options: any = await this.createFetchOptions(method, body);
+      const options: RequestInit = await this.createFetchOptions(method, body);
       const response = await fetch(`${this.url}/${endpoint}`, options);
 
       if (!response.ok) {

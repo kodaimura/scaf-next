@@ -23,7 +23,7 @@ const SignupPage: React.FC = () => {
     }
 
     try {
-      const response = await api.post('accounts/signup', {
+      await api.post('accounts/signup', {
         account_name,
         account_password,
       });

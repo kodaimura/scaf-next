@@ -1,11 +1,11 @@
 FROM node:23.6.1
 
-#WORKDIR /app
+WORKDIR /app
 
-#COPY package*.json ./
-#RUN npm install
+COPY package*.json ./
+RUN npm install
 
-#COPY . ./
+COPY . .
 
 #RUN npm run build
 

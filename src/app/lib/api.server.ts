@@ -4,13 +4,13 @@ import { redirect, forbidden } from 'next/navigation';
 
 const api = new Api(`${process.env.API_HOST}/api`);
 
-api.createFetchOptions = async (method: string, body?: unknown): Promise<any> => {
+api.createFetchOptions = async (method: string, body?: unknown): Promise<RequestInit> => {
   const cookieStore = await cookies();
-  const options: any = {
+  const options: RequestInit = {
     method: method,
     headers: {
       'Content-Type': 'application/json',
-      Cookie: `access_token=${cookieStore.get('access_token')?.value}`
+      Cookie: `access_token=${cookieStore.get('access_token')?.value ?? ""}`
     },
     credentials: 'include',
   };
