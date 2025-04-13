@@ -1,4 +1,4 @@
-FROM node:23.11.0-slim
+FROM node:23.11-slim
 
 WORKDIR /app
 
@@ -7,4 +7,5 @@ RUN npm install
 
 COPY . .
 
+# Uncomment the line below for production builds
 #RUN npm run build
