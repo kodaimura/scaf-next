@@ -3,7 +3,7 @@ ENV ?= dev
 DOCKER_COMPOSE_FILE = $(if $(filter prod,$(ENV)),-f docker-compose.prod.yml,)
 DOCKER_COMPOSE_CMD = $(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FILE)
 
-.PHONY: up build down stop in log ps install help
+.PHONY: up build down stop in log ps help
 
 up:
 	$(DOCKER_COMPOSE_CMD) up -d
@@ -18,18 +18,13 @@ stop:
 	$(DOCKER_COMPOSE_CMD) stop
 
 in:
-	$(DOCKER_COMPOSE_CMD) exec frontend bash
+	$(DOCKER_COMPOSE_CMD) exec web bash
 
 log:
-	$(DOCKER_COMPOSE_CMD) logs -f frontend
+	$(DOCKER_COMPOSE_CMD) logs -f web
 
 ps:
 	$(DOCKER_COMPOSE_CMD) ps
-
-install:
-	$(DOCKER_COMPOSE_CMD) down --remove-orphans
-	$(DOCKER_COMPOSE_CMD) run frontend npm install
-	$(DOCKER_COMPOSE_CMD) down --remove-orphans
 
 help:
 	@echo "Usage: make [target] [ENV=dev|prod]"
@@ -40,6 +35,5 @@ help:
 	@echo "  down      Stop and remove containers, networks, and volumes"
 	@echo "  stop      Stop containers"
 	@echo "  in        Access container via bash"
-	@echo "  log       Show logs for the container"
-	@echo "  ps        Show status for the container"
-	@echo "  install   Run 'npm install' in the container and remove orphaned containers"
+	@echo "  log       Show logs for containers"
+	@echo "  ps        Show status for containers"
