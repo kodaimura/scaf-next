@@ -34,6 +34,6 @@ help:
 	@echo "  build     Build containers without cache"
 	@echo "  down      Stop and remove containers, networks, and volumes"
 	@echo "  stop      Stop containers"
-	@echo "  in        Access container via bash"
-	@echo "  log       Show logs for containers"
+	@echo "  in        Access web container via bash"
+	@echo "  log       Show logs for the web container"
 	@echo "  ps        Show status for containers"
