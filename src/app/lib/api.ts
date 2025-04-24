@@ -33,7 +33,7 @@ class Api {
     if (endpoint.startsWith('/')) {
       endpoint = endpoint.slice(1);
     }
-    
+
     try {
       const options: RequestInit = await this.createFetchOptions(method, body);
       const response = await fetch(`${this.url}/${endpoint}`, options);

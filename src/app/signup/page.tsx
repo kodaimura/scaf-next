@@ -16,7 +16,7 @@ const SignupPage: React.FC = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     if (account_password !== confirm_password) {
       setError('パスワードが一致しません。');
       return;
