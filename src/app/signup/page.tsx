@@ -17,7 +17,10 @@ const SignupPage: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    if (account_password !== confirm_password) {
+    if (account_password.length < 8) {
+      setError('パスワードは8文字以上で入力してください。');
+      return;
+    } else if (account_password !== confirm_password) {
       setError('パスワードが一致しません。');
       return;
     }

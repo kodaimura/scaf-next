@@ -1,9 +1,11 @@
 class HttpError extends Error {
   status: number;
+  details: any;
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, details: any) {
     super(message);
     this.status = status;
+    this.details = details;
   }
 }
 
@@ -14,9 +16,9 @@ class Api {
     this.url = url;
   }
 
-  public async createFetchOptions(method: string, body?: unknown): Promise<any> {
+  public async createFetchOptions(method: string, body?: unknown): Promise<RequestInit> {
     const options: RequestInit = {
-      method: method,
+      method,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -35,21 +37,27 @@ class Api {
     }
 
     try {
-      const options: RequestInit = await this.createFetchOptions(method, body);
+      const options = await this.createFetchOptions(method, body);
       const response = await fetch(`${this.url}/${endpoint}`, options);
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new HttpError(response.status, errorData.error);
+        let errorData = { error: 'Unknown error', details: {} };
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          // JSON parse failed - leave default message
+        }
+        throw new HttpError(response.status, errorData.error, errorData.details);
+      }
+
+      if (response.status === 204) {
+        return {} as T;
       }
 
       try {
         return (await response.json()) as T;
-      } catch {
-        if (response.status !== 204 && response.status !== 200) {
-          throw new HttpError(response.status, 'Error parsing JSON');
-        }
-        return {} as T;
+      } catch (e) {
+        throw new HttpError(response.status, 'Error parsing JSON', { cause: e });
       }
     } catch (error: unknown) {
       if (error instanceof HttpError) {
