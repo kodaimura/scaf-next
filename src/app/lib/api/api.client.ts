@@ -95,7 +95,7 @@ class Api {
     if (status === 403) {
       alert('アクセスが拒否されました');
     } else if (status === 401 && window.location.pathname !== '/login') {
-      window.location.href = '/login';
+      window.location.replace('/login');
     }
   }
 }
