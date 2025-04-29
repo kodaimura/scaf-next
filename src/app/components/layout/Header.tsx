@@ -8,8 +8,8 @@ import { api } from '@/app/lib/api/api.client';
 const Header = () => {
   const pathname = usePathname();
 
-  const logout = () => {
-    api.post('/accounts/logout', {});
+  const logout = async () => {
+    await api.post('/accounts/logout', {});
     window.location.replace('/login');
   }
 
