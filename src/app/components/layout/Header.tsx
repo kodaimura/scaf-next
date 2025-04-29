@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Link from "next/link";
 import styles from './common.module.css';
-import { api } from '@/app/lib/api.client';
+import { api } from '@/app/lib/api/api.client';
 
 const Header = () => {
   const pathname = usePathname();

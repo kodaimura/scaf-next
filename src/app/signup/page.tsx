@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { HttpError } from '@/app/lib/api';
-import { api } from '@/app/lib/api.client';
+import { HttpError } from '@/app/lib/api/common';
+import { api } from '@/app/lib/api/api.client';
 import styles from './page.module.css';
 
 const SignupPage: React.FC = () => {
