@@ -27,7 +27,6 @@ ps:
 	$(DOCKER_COMPOSE_CMD) ps
 
 reup: down up
-	@echo "Containers have been re-up'd."
 
 help:
 	@echo "Usage: make [target] [ENV=dev|prod]"
