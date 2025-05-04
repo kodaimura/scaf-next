@@ -1,4 +1,39 @@
 .container {
-  width: 80%;
-  margin: 10px auto;
+  width: 90%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.loginLink {
+  padding: 5px 10px;
+  background: transparent;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.loginLink:hover {
+  background: white;
+  color: #2575fc;
+}
+
+.signupLink {
+  padding: 5px 10px;
+  background: white;
+  color: #2575fc;
+  text-decoration: none;
+  font-weight: bold;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.signupLink:hover {
+  background: #f0f0f0;
 }
