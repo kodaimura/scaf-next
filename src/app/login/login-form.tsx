@@ -5,8 +5,11 @@ import { useRouter } from 'next/navigation';
 import { HttpError } from '@/lib/api/common';
 import { api } from '@/lib/api/api.client';
 import styles from './login-form.module.css';
+import { useAuth } from '@/contexts/auth-context';
+import { Account } from '@/types/models';
 
 const LoginForm: React.FC = () => {
+  const { setAccount } = useAuth();
   const [name, setName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -18,6 +21,9 @@ const LoginForm: React.FC = () => {
 
     try {
       const response: any = await api.post('accounts/login', { name, password });
+      const me: Account = await api.get('accounts/me');
+      setAccount(me);
+
       router.push('/dashboard');
     } catch (err) {
       if (err instanceof HttpError && err.status === 401) {
