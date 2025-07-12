@@ -1,7 +1,12 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  if (isExcludedPath(pathname)) {
+    return NextResponse.next();
+  }
+
   const accessToken = request.cookies.get('access_token')?.value;
   const accessTokenExpiresAt = request.cookies.get('access_token_expires_at')?.value;
   const refreshToken = request.cookies.get('refresh_token')?.value;
@@ -16,6 +21,9 @@ export async function middleware(request: NextRequest) {
   if (!refreshToken) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
+
+  const host = request.headers.get('host');
+  const domain = getCookieDomain(host);
 
   // refresh
   const res = await fetch(`${process.env.API_HOST}/api/accounts/refresh`, {
@@ -43,6 +51,7 @@ export async function middleware(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
+      ...(domain ? { domain } : {}),
     });
   }
 
@@ -54,6 +63,7 @@ export async function middleware(request: NextRequest) {
       process.env.NODE_ENV === 'production' ? 'Secure' : '',
       'SameSite=Lax',
       'Path=/',
+      !(host === 'localhost' || host?.endsWith('.localhost')) && host ? `Domain=.${host}` : ''
     ].filter(Boolean).join('; '));
   }
 
@@ -66,8 +76,24 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
+const getCookieDomain = (host: string | null): string | undefined => {
+  if (!host) return undefined;
+  if (host === 'localhost' || host.endsWith('.localhost')) return undefined;
+  return host.startsWith('.') ? host : `.${host}`;
+}
+
+const isExcludedPath = (pathname: string): boolean => {
+  return [
+    '/',
+    '/login',
+    '/signup',
+    '/api/accounts/login',
+    '/api/accounts/signup',
+    '/api/accounts/refresh',
+    '/api/accounts/logout',
+  ].some((path) => pathname.startsWith(path));
+};
+
 export const config = {
-  matcher: [
-    '/dashboard',
-  ],
+  matcher: ['/:path*'],
 };
