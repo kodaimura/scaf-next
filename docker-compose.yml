@@ -1,3 +1,5 @@
+name: scaf-next
+
 services:
   web:
     image: scaf-next-web-dev
