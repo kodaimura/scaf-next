@@ -59,6 +59,7 @@ describe("application routes", () => {
     expect(isPrivateRoutePath(ROUTES.dashboard)).toBe(true);
     expect(isPrivateRoutePath(ROUTES.changePassword)).toBe(true);
     expect(isPrivateRoutePath(ROUTES.login)).toBe(false);
+    expect(isPrivateRoutePath(ROUTES.resetPassword)).toBe(false);
   });
 
   it("builds and accepts safe internal redirects", () => {

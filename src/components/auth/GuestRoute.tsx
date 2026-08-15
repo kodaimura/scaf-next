@@ -4,10 +4,9 @@ import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@contexts/AuthContext";
 import { ROUTES } from "@/routes";
-import LayoutPublic from "@layouts/LayoutPublic";
 import Processing from "@ui/Processing";
 
-const PublicRoute = ({ children }: { children: ReactNode }) => {
+const GuestRoute = ({ children }: { children: ReactNode }) => {
   const { account, loading } = useAuth();
   const router = useRouter();
 
@@ -17,7 +16,7 @@ const PublicRoute = ({ children }: { children: ReactNode }) => {
 
   if (loading || account) return <Processing text="読み込み中..." />;
 
-  return <LayoutPublic>{children}</LayoutPublic>;
+  return children;
 };
 
-export default PublicRoute;
+export default GuestRoute;

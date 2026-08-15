@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import PublicRoute from "@components/auth/PublicRoute";
+import LayoutPublic from "@layouts/LayoutPublic";
 
 const PublicLayout = ({ children }: { children: ReactNode }) => (
-  <PublicRoute>{children}</PublicRoute>
+  <LayoutPublic>{children}</LayoutPublic>
 );
 
 export default PublicLayout;

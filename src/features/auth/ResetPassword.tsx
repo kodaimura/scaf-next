@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { api } from "@lib/api";
+import { useAuth } from "@contexts/AuthContext";
 import { getPasswordResetTokenErrorMessage } from "@lib/errorMessages";
 import { waitAtLeast, waitForProcessingPaint } from "@lib/loading";
 import { validatePasswordConfirmation } from "@lib/validation";
@@ -18,6 +19,7 @@ import styles from "@styles/pages/reset-password/reset-password.module.css";
 type VerificationState = "checking" | "valid" | "invalid";
 
 const ResetPassword = ({ token }: { token: string }) => {
+  const { setAccount, setAccessToken } = useAuth();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -80,6 +82,8 @@ const ResetPassword = ({ token }: { token: string }) => {
         token,
         new_password: password,
       });
+      setAccount(null);
+      setAccessToken(null);
       setSucceeded(true);
     } catch (err) {
       setError(getPasswordResetTokenErrorMessage(err));
