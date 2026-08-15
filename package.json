@@ -9,7 +9,8 @@
     "build": "npm run typecheck && next build",
     "start": "next start",
     "lint": "eslint .",
-    "check": "npm run lint && npm run build",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test test/*.test.mjs",
+    "check": "npm run lint && npm run test && npm run build",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
