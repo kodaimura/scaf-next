@@ -1,13 +1,21 @@
 services:
   web:
+    image: scaf-next-web-prod
     build:
       context: .
-    volumes:
-      - .:/app
-    ports:
-      - "3000:3000"
+      dockerfile: Dockerfile.prod
     environment:
-      - NODE_ENV=production
-    working_dir: /app
-    command: sh -c "npm run build && npm run start"
-    restart: always
+      APP_API_URL: ${APP_API_URL:-/api}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -O - http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
