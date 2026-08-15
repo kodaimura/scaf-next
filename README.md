@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# scaf-next
 
-## Getting Started
+Next.js + React + TypeScript frontend template.
 
-First, run the development server:
+This template assumes Docker-based development. Local Node.js is not required.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Setup
+
+```sh
+cp .env.example .env
+make build
+make up
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sh
+WEB_PORT=3000
+APP_API_URL=http://localhost:8000/api
+```
 
-## Learn More
+`APP_API_URL` is exposed to the browser through `/env.json` at runtime. The
+production image can be reused across environments without rebuilding for each
+API URL.
 
-To learn more about Next.js, take a look at the following resources:
+## Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+make up                 # Start dev server
+make down               # Stop containers
+make down_volumes       # Stop containers and remove named volumes
+make log                # Follow web logs
+make in                 # Open sh in the web container
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+make check              # Run lint and production build
+make lint               # Run ESLint
+make typecheck          # Run TypeScript check
+make format             # Format with Prettier
+make smoke              # Check key routes on the running app
+make audit              # Audit production dependencies
+make outdated           # Check outdated dependencies
+```
 
-## Deploy on Vercel
+## Production Build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The production image uses the Next.js standalone server.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```sh
+make build ENV=prod
+APP_API_URL=https://api.example.com/api make up ENV=prod
+```
