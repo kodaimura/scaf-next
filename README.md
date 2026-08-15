@@ -1,5 +1,11 @@
 # scaf-next
 
+Rename template identifiers after cloning directly:
+
+```sh
+bin/scaf-init my-app
+```
+
 Next.js + React + TypeScript frontend template.
 
 This template assumes Docker-based development. Local Node.js is not required.
