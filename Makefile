@@ -1,4 +1,5 @@
 ENV ?= dev
+PROJECT_NAME ?= $(notdir $(CURDIR))
 WEB_PORT ?= 3000
 SMOKE_BASE_URL ?= http://127.0.0.1:$(WEB_PORT)
 DOCKER_COMPOSE = docker compose
@@ -6,7 +7,10 @@ DOCKER_COMPOSE_FILE = $(if $(filter prod,$(ENV)),-f docker-compose.prod.yml,-f d
 DOCKER_COMPOSE_CMD = $(DOCKER_COMPOSE) $(DOCKER_COMPOSE_FILE)
 RUN_WEB = $(DOCKER_COMPOSE_CMD) run --rm web
 
-.PHONY: up build build_no_cache down down_volumes stop in log logs ps reup restart install lint typecheck test check format format_check smoke audit audit_all outdated help
+.PHONY: init up build build_no_cache down down_volumes stop in log logs ps reup restart install lint typecheck test check format format_check smoke audit audit_all outdated help
+
+init:
+	./bin/scaf-init "$(PROJECT_NAME)"
 
 up:
 	$(DOCKER_COMPOSE_CMD) up -d
@@ -79,6 +83,7 @@ help:
 	@echo "Usage: make [target] [ENV=dev|prod]"
 	@echo ""
 	@echo "Targets:"
+	@echo "  init      Initialize project identifiers (defaults to directory name)"
 	@echo "  up        Start containers"
 	@echo "  build     Build containers"
 	@echo "  build_no_cache Build containers without cache"
