@@ -1,4 +1,5 @@
 import { appConfig } from "@lib/config";
+import { buildLoginPathWithFrom, isPrivateRoutePath } from "@/routes";
 
 export interface HttpErrorDetails {
   [key: string]: unknown;
@@ -268,15 +269,15 @@ export class Api {
   }
 
   private handleHttpError(error: HttpError): void {
-    console.error(error);
     const status = error.status;
 
     if (
       status === 401 &&
       (error.code.startsWith("AUTH_") || error.code.startsWith("REFRESH_")) &&
-      window.location.pathname !== "/login"
+      isPrivateRoutePath(window.location.pathname)
     ) {
-      window.location.replace("/login");
+      const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      window.location.replace(buildLoginPathWithFrom(currentPath));
     }
   }
 }
