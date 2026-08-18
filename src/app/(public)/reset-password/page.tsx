@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import ResetPassword from "@/features/auth/ResetPassword";
 
-export const metadata: Metadata = { title: "新しいパスワード | ScafNext" };
+export const metadata: Metadata = {
+  title: "新しいパスワード | ScafNext",
+};
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 

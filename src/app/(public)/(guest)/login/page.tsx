@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Login from "@/features/auth/Login";
 import { PASSWORD_CHANGED_PARAM, REDIRECT_PARAM } from "@/routes";
 
-export const metadata: Metadata = { title: "ログイン | ScafNext" };
+export const metadata: Metadata = {
+  title: "ログイン | ScafNext",
+};
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
